@@ -1,0 +1,22 @@
+<h2>Register</h2>
+
+<form action="/api/user/register" method="post">
+  <p>
+    <label>Username</label>
+    <input type="text" name="username" id="username" placeholder="Username">
+  </p>
+  <p>
+    <label>Password</label>
+    <input type="password" name="password" id="password" placeholder="Password">
+  </p>
+  <p>
+    <label>Store</label>
+    <select name="store" id="store">
+      <option selected>Select a Store</option>
+      {{#each stores}}
+      <option value="{{this._id}}">{{this.name}}</option>
+      {{/each }}
+    </select>
+  </p>
+  <button type="submit">Login</button>
+</form>
