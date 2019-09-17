@@ -1,38 +1,36 @@
-require("dotenv").config();
-require("./database");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const express = require("express");
-const favicon = require("serve-favicon");
-const hbs = require("hbs");
-const cors = require("cors");
-const logger = require("morgan");
-const path = require("path");
-const passport = require("./config/passport");
-const session = require("express-session");
-const app_name = require("./package.json").name;
-const debug = require("debug")(
-  `${app_name}:${path.basename(__filename).split(".")[0]}`
-);
+require('dotenv').config();
+require('./database');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const favicon = require('serve-favicon');
+const hbs = require('hbs');
+const cors = require('cors');
+const logger = require('morgan');
+const path = require('path');
+const passport = require('./config/passport');
+const session = require('express-session');
+const app_name = require('./package.json').name;
+const debug = require('debug')(`${app_name}:${path.basename(__filename).split('.')[0]}`);
 
 const app = express();
 
 // Middleware Setup
-app.use(logger("dev"));
+app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Session Setup
 app.use(
-  session({
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24
-    },
-    secret: process.env.SECRET
-  })
+	session({
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			maxAge: 1000 * 60 * 60 * 24
+		},
+		secret: process.env.SECRET
+	})
 );
 
 app.use(cors());
@@ -42,33 +40,34 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(
-  require("node-sass-middleware")({
-    src: path.join(__dirname, "public"),
-    dest: path.join(__dirname, "public"),
-    sourceMap: true
-  })
+	require('node-sass-middleware')({
+		src: path.join(__dirname, 'public'),
+		dest: path.join(__dirname, 'public'),
+		sourceMap: true
+	})
 );
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "hbs");
-app.use(express.static(path.join(__dirname, "public")));
-app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 // default value for title local
-app.locals.title = "Express - Generated with IronGenerator";
+app.locals.title = 'Express - Generated with IronGenerator';
 
-const authRoutes = require("./routes/auth");
-app.use("/api/user", authRoutes);
-app.use("/api/order", require("./routes/order"));
-app.use("/api/store", require("./routes/store"));
+const authRoutes = require('./routes/auth');
+app.use('/api/user', authRoutes);
+app.use('/api/article', require('./routes/articles'));
+app.use('/api/order', require('./routes/order'));
+app.use('/api/store', require('./routes/store'));
 
 app.use((req, res, next) => {
-  res.status(404).send("Sorry cant find that!");
+	res.status(404).send('Sorry cant find that!');
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
+	console.error(err.stack);
+	res.status(500).send('Something broke!');
 });
 
 module.exports = app;
